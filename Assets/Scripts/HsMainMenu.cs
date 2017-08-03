@@ -7,13 +7,17 @@ using UnityEngine;
 	@version 1.0.0
 */
 
-public class HsMainCamera : MonoBehaviour {
+public class HsMainMenu : MonoBehaviour {
 
-	void Start () {
-		HsAdmob.instance.ShowBanner();
+	public void PlayGame(){
+		
 	}
 
-	void Update () {
+	public void Ranking(){
+		
+	}
+
+	public void Exit(){
 		
 	}
 }
