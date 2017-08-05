@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using admob;
 
+/* 
+	@author Hudson Schumaker
+	@version 1.0.0
+*/
 
 public class HsAdmob : MonoBehaviour {
 

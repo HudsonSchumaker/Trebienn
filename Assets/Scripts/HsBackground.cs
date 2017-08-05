@@ -27,7 +27,4 @@ public class HsBackground : MonoBehaviour {
 		novaEscala.y = alturaTela/alturaImagem;
 		this.transform.localScale = novaEscala;
 	}
-
-	private void Update () {
-	}
 }

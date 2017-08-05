@@ -8,22 +8,117 @@ using UnityEngine.UI;
 */
 public class HsGetImage : MonoBehaviour {
 
-	public string url = "http://schumakerteam.com/officehero/photos/1.jpg";
-	public GameObject obj;
+	public GameObject assLeft;
+	public GameObject assRight;
+	public Sprite loading;
 
-	IEnumerator Start()
-	{
-		// Start a download of the given URL
-		WWW www = new WWW(url);
+	private string assLeftName;
+	private string assRightName;
+	private int clicks;
 
-		// Wait for download to complete
+
+	void Start(){
+	 	HsAdmob.instance.ShowBannerDown ();
+		StartCoroutine(GetFristTwo());
+		clicks = 0;
+	}
+		
+	void FixedUpdate(){
+		if(clicks>=15){
+			HsAdmob.instance.ShowVideo ();
+			clicks = 0;
+		}
+	} 
+		
+	public void SetScoreLeft(){
+		StartCoroutine (SetScoreLoser (assRightName));
+		StartCoroutine (SetScoreWinner(assLeftName));
+		StartCoroutine (GetOneRight ());
+		clicks++;
+	}
+
+	public void SetScoreRight(){
+		StartCoroutine (SetScoreLoser (assLeftName));
+		StartCoroutine (SetScoreWinner(assRightName));
+		StartCoroutine (GetOneLeft ());
+		clicks++;
+	}
+
+	private IEnumerator GetOneLeft(){
+		WWW www = new WWW("http://schumaker.com.br/Trebiann/getone.jsp?w="+assRightName+"&l="+assLeftName+"");
+		yield return www;
+		string aux = www.text;
+		www.Dispose ();
+		assLeftName = aux.Trim ();
+		StartCoroutine (SetAssLeft(assLeftName));
+	}
+
+	private IEnumerator GetOneRight(){
+		WWW www = new WWW("http://schumaker.com.br/Trebiann/getone.jsp?w="+assRightName+"&l="+assLeftName+"");
+		yield return www;
+		string aux = www.text;
+		www.Dispose ();
+		assRightName = aux.Trim ();
+		StartCoroutine (SetAssRight(assRightName));
+	}
+
+	private IEnumerator GetFristTwo(){
+		WWW www = new WWW("http://schumaker.com.br/Trebiann/getfristtwo.jsp");
 		yield return www;
 
-		// assign texture
+		string aux = www.text;
+		string [] values  = aux.Split( new char [] {';'});
+
+		assLeftName = values [1].Trim();
+		assRightName = values [2].Trim();
+
+		StartCoroutine (SetAssLeft(assLeftName));
+		StartCoroutine (SetAssRight (assRightName));
+		www.Dispose ();
+	}
+
+	private IEnumerator SetAssLeft(string ass){
+
+		Image img = assLeft.GetComponent<Image>();
+		img.sprite = loading;
+
+		WWW www = new WWW("http://schumaker.com.br/App/photos/"+ass+".jpg");
+		yield return www;
+
 		Rect rec = new Rect(0, 0, www.texture.width, www.texture.height);
 		Sprite spriteToUse = Sprite.Create(www.texture,rec,new Vector2(0.5f,0.5f),100);
-
-		Image buttonImage = this.gameObject.GetComponent<Image>();
+		www.Dispose ();
+		Image buttonImage = assLeft.GetComponent<Image>();
 		buttonImage.sprite = spriteToUse;
+	}
+
+	private IEnumerator SetAssRight(string ass){
+
+		Image img = assRight.GetComponent<Image>();
+		img.sprite = loading;
+
+		WWW www = new WWW("http://schumaker.com.br/App/photos/"+ass+".jpg");
+		yield return www;
+
+		Rect rec = new Rect(0, 0, www.texture.width, www.texture.height);
+		Sprite spriteToUse = Sprite.Create(www.texture,rec,new Vector2(0.5f,0.5f),100);
+		www.Dispose ();
+		Image buttonImage = assRight.GetComponent<Image>();
+		buttonImage.sprite = spriteToUse;
+	}
+
+	private IEnumerator SetScoreWinner(string id){
+	//	HsAdmob.instance.ShowBannerDown ();
+		WWW www = new WWW("http://schumaker.com.br/Trebiann/setwinner.jsp?w="+id+"");
+		yield return www;  
+	}
+
+	private IEnumerator SetScoreLoser(string id){
+		WWW www = new WWW("http://schumaker.com.br/Trebiann/setloser.jsp?l="+id+"");
+		yield return www;   
+	}
+
+	private void ManageBanner(){
+		
 	}
 }
