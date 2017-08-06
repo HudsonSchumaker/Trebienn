@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 /* 
 	@author Hudson Schumaker
 	@version 1.0.0
@@ -24,9 +25,12 @@ public class HsGetImage : MonoBehaviour {
 	}
 		
 	void FixedUpdate(){
-		if(clicks>=15){
-			HsAdmob.instance.ShowVideo ();
+		if(clicks>=20){
 			clicks = 0;
+			HsAdmob.instance.RemoveBanners ();
+			HsAdmob.instance.ShowVideo ();
+			HsAdmob.instance.LoadBigBanner ();
+			HsAdmob.instance.ShowBannerDown ();
 		}
 	} 
 		
@@ -108,7 +112,6 @@ public class HsGetImage : MonoBehaviour {
 	}
 
 	private IEnumerator SetScoreWinner(string id){
-	//	HsAdmob.instance.ShowBannerDown ();
 		WWW www = new WWW("http://schumaker.com.br/Trebiann/setwinner.jsp?w="+id+"");
 		yield return www;  
 	}
@@ -118,7 +121,8 @@ public class HsGetImage : MonoBehaviour {
 		yield return www;   
 	}
 
-	private void ManageBanner(){
-		
+	public void Back(){
+		HsAdmob.instance.RemoveBanners ();
+		SceneManager.LoadScene ("_MainMenu");
 	}
 }
