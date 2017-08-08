@@ -11,7 +11,6 @@ using UnityEngine.SceneManagement;
 public class HsMainMenu : MonoBehaviour {
 
 	private void Awake(){
-		
 	}
 
 	private void Start () {

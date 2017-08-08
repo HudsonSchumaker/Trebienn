@@ -19,7 +19,7 @@ public class HsGetImage : MonoBehaviour {
 
 
 	void Start(){
-	 	HsAdmob.instance.ShowBannerDown ();
+		InvokeRepeating ("ManageAds",0.1f,15.5f);
 		StartCoroutine(GetFristTwo());
 		clicks = 0;
 	}
@@ -28,7 +28,7 @@ public class HsGetImage : MonoBehaviour {
 		if(clicks>=20){
 			clicks = 0;
 			HsAdmob.instance.RemoveBanners ();
-			HsAdmob.instance.ShowVideo ();
+		    HsAdmob.instance.ShowVideo ();
 			HsAdmob.instance.LoadBigBanner ();
 			HsAdmob.instance.ShowBannerDown ();
 		}
@@ -53,6 +53,8 @@ public class HsGetImage : MonoBehaviour {
 		yield return www;
 		string aux = www.text;
 		www.Dispose ();
+		Resources.UnloadUnusedAssets();
+
 		assLeftName = aux.Trim ();
 		StartCoroutine (SetAssLeft(assLeftName));
 	}
@@ -62,23 +64,25 @@ public class HsGetImage : MonoBehaviour {
 		yield return www;
 		string aux = www.text;
 		www.Dispose ();
+		Resources.UnloadUnusedAssets();
+
 		assRightName = aux.Trim ();
 		StartCoroutine (SetAssRight(assRightName));
 	}
 
 	private IEnumerator GetFristTwo(){
-		WWW www = new WWW("http://schumaker.com.br/Trebiann/getfristtwo.jsp");
+		WWW www = new WWW ("http://schumaker.com.br/Trebiann/getfristtwo.jsp");
 		yield return www;
 
 		string aux = www.text;
-		string [] values  = aux.Split( new char [] {';'});
-
-		assLeftName = values [1].Trim();
-		assRightName = values [2].Trim();
-
-		StartCoroutine (SetAssLeft(assLeftName));
-		StartCoroutine (SetAssRight (assRightName));
 		www.Dispose ();
+		string[] values = aux.Split (new char [] { ';' });
+
+		assLeftName = values [1].Trim ();
+		assRightName = values [2].Trim ();
+
+		StartCoroutine (SetAssLeft (assLeftName));
+		StartCoroutine (SetAssRight (assRightName));
 	}
 
 	private IEnumerator SetAssLeft(string ass){
@@ -91,9 +95,13 @@ public class HsGetImage : MonoBehaviour {
 
 		Rect rec = new Rect(0, 0, www.texture.width, www.texture.height);
 		Sprite spriteToUse = Sprite.Create(www.texture,rec,new Vector2(0.5f,0.5f),100);
-		www.Dispose ();
 		Image buttonImage = assLeft.GetComponent<Image>();
 		buttonImage.sprite = spriteToUse;
+	
+		DestroyImmediate(www.texture);
+		//DestroyImmediate(spriteToUse);
+		www.Dispose();
+		Resources.UnloadUnusedAssets();
 	}
 
 	private IEnumerator SetAssRight(string ass){
@@ -106,19 +114,35 @@ public class HsGetImage : MonoBehaviour {
 
 		Rect rec = new Rect(0, 0, www.texture.width, www.texture.height);
 		Sprite spriteToUse = Sprite.Create(www.texture,rec,new Vector2(0.5f,0.5f),100);
-		www.Dispose ();
+
 		Image buttonImage = assRight.GetComponent<Image>();
 		buttonImage.sprite = spriteToUse;
+
+		DestroyImmediate(www.texture);
+		//DestroyImmediate(spriteToUse);
+		www.Dispose();
+		Resources.UnloadUnusedAssets();
 	}
 
 	private IEnumerator SetScoreWinner(string id){
 		WWW www = new WWW("http://schumaker.com.br/Trebiann/setwinner.jsp?w="+id+"");
-		yield return www;  
+		yield return www; 
+		www.Dispose ();
+		Resources.UnloadUnusedAssets();
 	}
 
 	private IEnumerator SetScoreLoser(string id){
 		WWW www = new WWW("http://schumaker.com.br/Trebiann/setloser.jsp?l="+id+"");
 		yield return www;   
+		www.Dispose ();
+		Resources.UnloadUnusedAssets();
+	}
+
+	private void ManageAds(){
+		HsAdmob.instance.RemoveBanners ();
+		new	WaitForSeconds (1);
+		Resources.UnloadUnusedAssets();
+		HsAdmob.instance.ShowBannerDown ();
 	}
 
 	public void Back(){
