@@ -19,7 +19,7 @@ public class HsGetImage : MonoBehaviour {
 
 
 	void Start(){
-		InvokeRepeating ("ManageAds",0.1f,15.5f);
+		InvokeRepeating ("ManageAds",0.1f,14.555f);
 		StartCoroutine(GetFristTwo());
 		clicks = 0;
 	}
